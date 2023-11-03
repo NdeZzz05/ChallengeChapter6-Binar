@@ -35,7 +35,7 @@ export const DetailsMovie = () => {
         setShowSkeleton(false);
       }, 800);
     }
-  }, [dispatch, details, id]);
+  }, []);
 
   return (
     <>

@@ -24,7 +24,7 @@ export const SearchMovie = () => {
         setShowSkeleton(false);
       }, 800);
     }
-  }, [query, dispatch, search]);
+  }, [query]);
 
   return (
     <>
