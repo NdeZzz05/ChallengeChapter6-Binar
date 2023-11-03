@@ -9,27 +9,30 @@ import "../assets/css/index.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import { useDataNowPlaying } from "../services/get-data-movie-NowPlaying";
 import { Navbar } from "../assets/components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../assets/components/Footer";
-import { useDataPopular } from "../services/get-data-movie-Popular-V4";
 import Skeleton from "react-loading-skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import { actGetMoviePopular } from "../redux/actions/actGetMoviePopular";
 
 export const HomePage = () => {
   const navigate = useNavigate();
-
-  const { data: nowPlayingData } = useDataNowPlaying({ page: 1, language: "en-US" });
-  const { data: dataPopular } = useDataPopular({ page: 1, language: "en-US" });
   const [showSkeleton, setShowSkeleton] = useState(true);
+  const popular = useSelector((state) => state.getMoviePopular.moviePopular);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (dataPopular) {
+    const getMovieAll = async () => {
+      await dispatch(actGetMoviePopular());
+    };
+    getMovieAll();
+    if (popular) {
       setTimeout(() => {
         setShowSkeleton(false);
       }, 800);
     }
-  }, [dataPopular]);
+  }, [dispatch, popular]);
 
   return (
     <>
@@ -50,7 +53,7 @@ export const HomePage = () => {
             modules={[Autoplay, Pagination, Navigation]}
             className="mySwiper"
           >
-            {nowPlayingData?.data?.slice(0, 5).map((value) => {
+            {popular?.slice(0, 5).map((value) => {
               return (
                 <SwiperSlide key={value.id}>
                   <img src={`https://image.tmdb.org/t/p/original/${value.backdrop_path}`} alt="" className="bgUtama w-screen" />
@@ -61,7 +64,7 @@ export const HomePage = () => {
                     </div>
                     <div className="flex justify-center items-center mr-[0.5rem]">
                       <img src={iconstar} alt="" className="w-[1rem] h-[1rem]"></img>
-                      <h6 className="text-white ml-[0.3rem] mr-[1rem] my-[1rem]">{value.vote_average}/10</h6>
+                      <h6 className="text-white ml-[0.3rem] mr-[1rem] my-[1rem]">{Math.round(value.vote_average)}/10</h6>
                     </div>
                     <button className="border border-red-700 text-white bg-red-700 font-semibold rounded-full px-[1rem] mr-[1rem] h-[2.5rem] hover:scale-110 duration-100" onClick={() => navigate(`/detail/${value.id}`)}>
                       Watch Trailer
@@ -81,7 +84,7 @@ export const HomePage = () => {
           </div>
         </div>
         <div className="w-screen flex">
-          {dataPopular?.data?.slice(0, 5).map((value) => {
+          {popular?.slice(0, 5).map((value) => {
             return (
               <div className="flex flex-wrap w-[16rem] m-auto cursor-pointer" key={value.id} onClick={() => navigate(`/detail/${value.id}`)}>
                 {showSkeleton ? <Skeleton width="15rem" height="22rem" /> : <img src={`https://image.tmdb.org/t/p/original/${value.poster_path}`} alt="" className="w-[15rem] m-auto rounded-md hover:scale-105" />}

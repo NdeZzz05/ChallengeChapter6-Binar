@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../img/logo.png";
 import { useNavigate } from "react-router-dom";
 import { CookieKeys, CookieStorage } from "../../utils/cookies";
 import { Box, Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { useGetDataUser } from "../../services/auth/get_user";
+import { useDispatch, useSelector } from "react-redux";
+import { actAuthGetUser } from "../../redux/actions/actAuthGetUser";
 
 export const Navbar = () => {
   const [query, setQuery] = useState([]);
   const navigate = useNavigate();
-  const { data: dataUser } = useGetDataUser({});
+  const dispatch = useDispatch();
+  const getDataUser = useSelector((state) => state.authGetUser.getUser);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!query || query.trim() === "") return;
+    if (/^[!@#$%^&*()_+={}|[\]:;"'<>,.?/\\|~`]+$/.test(query)) return;
     navigate(`/search/${query}`);
   };
 
@@ -20,6 +24,13 @@ export const Navbar = () => {
     CookieStorage.remove(CookieKeys.AuthToken);
     window.location.href = "/";
   };
+
+  useEffect(() => {
+    const getUser = async () => {
+      await dispatch(actAuthGetUser());
+    };
+    getUser();
+  }, [dispatch]);
 
   return (
     <div className="Navbar w-screen h-[4rem] flex items-center justify-between absolute z-20">
@@ -63,7 +74,7 @@ export const Navbar = () => {
                   bg: "#831010",
                 }}
               >
-                {dataUser ? dataUser?.data?.name : "nousername"}
+                {getDataUser ? getDataUser?.name : "nousername"}
               </MenuButton>
               <MenuList width="10rem">
                 <MenuItem onClick={() => handleLogout()}>Logout</MenuItem>

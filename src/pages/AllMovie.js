@@ -3,23 +3,27 @@ import { Navbar } from "../assets/components/Navbar";
 import bgfilm from "../assets/img/bgFilm.jpg";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../assets/components/Footer";
-import { useDataPopular } from "../services/get-data-movie-Popular-V4";
 import Skeleton from "react-loading-skeleton";
+import { useDispatch, useSelector } from "react-redux";
+import { actGetMoviePopular } from "../redux/actions/actGetMoviePopular";
 
 export const AllMovie = () => {
   const navigate = useNavigate();
-  const [Page, setPage] = useState(1);
   const [showSkeleton, setShowSkeleton] = useState(true);
-
-  const { data: dataPopular } = useDataPopular({ page: Page, language: "en-US" });
+  const popular = useSelector((state) => state.getMoviePopular.moviePopular);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (dataPopular) {
+    const getMovieAll = async () => {
+      await dispatch(actGetMoviePopular());
+    };
+    getMovieAll();
+    if (popular) {
       setTimeout(() => {
         setShowSkeleton(false);
       }, 800);
     }
-  }, [dataPopular]);
+  }, [dispatch, popular]);
 
   return (
     <>
@@ -33,7 +37,7 @@ export const AllMovie = () => {
           <div className="absolute inset-[-2px] h-100 bg-gradient-to-b from-transparent to-black bottom-1/2 transform"></div>
         </div>
         <div className="w-screen bg-black flex flex-wrap">
-          {dataPopular?.data.map((value) => {
+          {popular?.map((value) => {
             return (
               <div className="m-auto w-[15rem] h-[32rem] cursor-pointer" key={value.id} onClick={() => navigate(`/detail/${value.id}`)}>
                 {showSkeleton ? <Skeleton width="15rem" height="22rem" /> : <img src={`https://image.tmdb.org/t/p/original/${value.poster_path}`} alt="" className="w-[15rem] m-auto rounded-md hover:scale-105" />}
