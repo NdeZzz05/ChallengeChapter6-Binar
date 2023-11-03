@@ -1,28 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import bgfilm from "../../assets/img/bgFilm.jpg";
 import { Footer } from "../../assets/components/Footer";
 import { Box, Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { useCreateUser } from "../../services/auth/register_user";
 import { LogoNavbar } from "../../assets/components/LogoNavbar";
+import { useDispatch } from "react-redux";
+import { actAuthRegister } from "../../redux/actions/actAuthRegister";
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
   const [Email, setEmail] = useState("");
-  const { mutate: regisUser, data } = useCreateUser();
 
   const registerUser = () => {
-    regisUser({
-      email: Email,
-      name: Username,
-      password: Password,
-    });
+    dispatch(
+      actAuthRegister({
+        email: Email,
+        name: Username,
+        password: Password,
+      })
+    );
   };
 
   const formik = useFormik({
@@ -55,35 +58,6 @@ export const RegisterPage = () => {
       setPassword(target.value);
     }
   };
-
-  useEffect(() => {
-    if (data?.data?.data?.token) {
-      toast.success("Register Berhasil", {
-        position: "top-right",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 2000);
-    } else if (data?.response?.data?.message === "User has already registered") {
-      toast.error("Email sudah terdaftar", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    }
-  }, [data]);
 
   return (
     <>
