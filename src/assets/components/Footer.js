@@ -43,7 +43,7 @@ export const Footer = () => {
         <div className="text-center text-white opacity-80 pb-4">
           © 2023 Created By :
           <a className="text-white opacity-80 pl-1" href="#!">
-            #
+            Muhammad Fernandes
           </a>
         </div>
       </footer>

@@ -38,7 +38,7 @@ export const RegisterPage = () => {
       password: yup
         .string()
         .required("Mohon isi di kolom berikut")
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, "Kata sandi harus terdapat 8 karakter terdiri dari huruf besar, huruf kecil, angka, dan karakter spesial"),
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#|$%|^&|*])(?=.{8,})/, "Kata sandi harus terdapat 8 karakter terdiri dari huruf besar, huruf kecil, angka, dan karakter spesial"),
     }),
   });
 

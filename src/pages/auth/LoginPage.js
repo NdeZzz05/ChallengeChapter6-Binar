@@ -1,37 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import bgfilm from "../../assets/img/bgFilm.jpg";
 import { Footer } from "../../assets/components/Footer";
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Heading,
-  Input,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { LogoNavbar } from "../../assets/components/LogoNavbar";
-import { useLoginUser } from "../../services/auth/login_user";
 import { GoogleLogin } from "@react-oauth/google";
+import { useDispatch } from "react-redux";
+import { actAuthLogin } from "../../redux/actions/actAuthLogin";
 
 export const LoginPage = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [Password, setPassword] = useState("");
   const [Email, setEmail] = useState("");
-  const { mutate: loginUser, data } = useLoginUser();
 
   const handleLoginUser = () => {
-    loginUser({
-      email: Email,
-      password: Password,
-    });
+    dispatch(
+      actAuthLogin({
+        email: Email,
+        password: Password,
+      })
+    );
   };
 
   const formik = useFormik({
@@ -42,10 +35,7 @@ export const LoginPage = () => {
     },
     onSubmit: handleLoginUser,
     validationSchema: yup.object().shape({
-      email: yup
-        .string()
-        .required("Mohon isi di kolom berikut")
-        .email("Masukkan email yang valid"),
+      email: yup.string().required("Mohon isi di kolom berikut").email("Masukkan email yang valid"),
       password: yup.string().required("Mohon isi di kolom berikut"),
     }),
   });
@@ -61,57 +51,6 @@ export const LoginPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (data?.data?.data?.token) {
-      toast.success("Login Berhasil", {
-        position: "top-right",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      setTimeout(() => {
-        window.location.href = "/homepage";
-      }, 2000);
-    } else if (data?.response?.data?.message === "Wrong password") {
-      toast.error("Password atau email anda salah", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    } else if (data?.response?.data?.message === "User is not found") {
-      toast.error("Pengguna tidak ditemukan", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    } else if (data?.response?.data?.message === "Email is not valid") {
-      toast.error("Email salah atau tidak benar", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    }
-  }, [data]);
-
   return (
     <>
       <div className="w-screen h-screen">
@@ -119,10 +58,7 @@ export const LoginPage = () => {
         <div className="w-screen h-screen flex justify-center items-center absolute z-20 px-[1rem]">
           <div className="w-[25rem] bg-black bg-opacity-70 flex rounded-md">
             <Container py="4">
-              <Heading
-                color="white"
-                className="flex justify-center items-center"
-              >
+              <Heading color="white" className="flex justify-center items-center">
                 Login
               </Heading>
               <Box padding="4" border="" borderRadius="4px" mt="4" px="8">
@@ -130,29 +66,13 @@ export const LoginPage = () => {
                   <Stack spacing="1">
                     <FormControl isInvalid={formik.errors.email} isRequired>
                       <FormLabel color="white">Email</FormLabel>
-                      <Input
-                        onChange={handleForm}
-                        type="email"
-                        name="email"
-                        placeholder="email"
-                        backgroundColor="white"
-                        color="black"
-                      />
+                      <Input onChange={handleForm} type="email" name="email" placeholder="email" backgroundColor="white" color="black" />
                       <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
                     </FormControl>
                     <FormControl isInvalid={formik.errors.password} isRequired>
                       <FormLabel color="white">Password</FormLabel>
-                      <Input
-                        onChange={handleForm}
-                        type="password"
-                        name="password"
-                        placeholder="password"
-                        backgroundColor="white"
-                        color="black"
-                      />
-                      <FormErrorMessage>
-                        {formik.errors.password}
-                      </FormErrorMessage>
+                      <Input onChange={handleForm} type="password" name="password" placeholder="password" backgroundColor="white" color="black" />
+                      <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
                     </FormControl>
                     <Button
                       type="submit"
@@ -166,18 +86,7 @@ export const LoginPage = () => {
                     >
                       Login Account
                     </Button>
-                    <ToastContainer
-                      position="top-right"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      theme="colored"
-                    />
+                    <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
                   </Stack>
                   <div className="flex justify-center items-center mt-[1rem]">
                     <GoogleLogin
@@ -193,10 +102,7 @@ export const LoginPage = () => {
                 </form>
                 <div className="text-white font-thin flex justify-center items-center pt-[1rem]">
                   Belum punya akun?
-                  <span
-                    className=" cursor-pointer font-medium pl-[0.3rem] inline-block"
-                    onClick={() => navigate(`/register`)}
-                  >
+                  <span className=" cursor-pointer font-medium pl-[0.3rem] inline-block" onClick={() => navigate(`/register`)}>
                     Daftar sekarang
                   </span>
                 </div>
@@ -205,11 +111,7 @@ export const LoginPage = () => {
           </div>
         </div>
         <div className="absolute z-10 bg-black opacity-40 w-screen h-screen"></div>
-        <img
-          src={bgfilm}
-          alt="background"
-          className="object-cover h-full w-screen"
-        />
+        <img src={bgfilm} alt="background" className="object-cover h-full w-screen" />
         <Footer />
       </div>
     </>
