@@ -23,7 +23,7 @@ export const AllMovie = () => {
         setShowSkeleton(false);
       }, 800);
     }
-  }, [dispatch, popular]);
+  }, []);
 
   return (
     <>

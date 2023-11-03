@@ -32,7 +32,7 @@ export const HomePage = () => {
         setShowSkeleton(false);
       }, 800);
     }
-  }, [dispatch, popular]);
+  }, []);
 
   return (
     <>
