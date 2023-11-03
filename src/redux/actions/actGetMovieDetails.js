@@ -5,6 +5,7 @@ export const actGetMovieDetails = (id) => async (dispatch) => {
   reduxGetMovieDetails(id)
     .then((result) => {
       dispatch(setDetails(result?.data?.data));
+      console.log(id, "id");
     })
     .catch((err) => {
       if (err.response.status === 401) {

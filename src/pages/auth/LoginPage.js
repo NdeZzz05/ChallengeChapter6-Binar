@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { LogoNavbar } from "../../assets/components/LogoNavbar";
-import { GoogleLogin } from "@react-oauth/google";
+import GoogleLogin from "../../assets/components/GoogleLogin";
 import { useDispatch } from "react-redux";
 import { actAuthLogin } from "../../redux/actions/actAuthLogin";
 
@@ -88,16 +88,13 @@ export const LoginPage = () => {
                     </Button>
                     <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
                   </Stack>
-                  <div className="flex justify-center items-center mt-[1rem]">
-                    <GoogleLogin
-                      onSuccess={(credentialResponse) => {
-                        console.log(credentialResponse);
-                      }}
-                      onError={() => {
-                        console.log("Login Failed");
-                      }}
-                      className="custom-google-button"
-                    />
+                  <div className="flex justify-center items-center mt-[0.5rem] text-white relative">
+                    <hr className="absolute left-5 top-1/2 w-1/3 border-t border-white" />
+                    <span className="px-2 text-lg">or</span>
+                    <hr className="absolute right-5 top-1/2 w-1/3 border-t border-white" />
+                  </div>
+                  <div className="flex justify-center items-center mt-[0.5rem]">
+                    <GoogleLogin />
                   </div>
                 </form>
                 <div className="text-white font-thin flex justify-center items-center pt-[1rem]">
